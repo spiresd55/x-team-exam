@@ -7,7 +7,8 @@ var config = {
     '(1) Provide comma separated search terms to search for. \n' +
     '(2) Type ":exit" to exit the program \n' +
     '(3) Type ":add" to add a new JSON file to the server \n',
-    programPrompt: 'search >'
+    programPrompt: 'search >',
+    searchCriteria: 'tag'
 }
 
 module.exports = config;
