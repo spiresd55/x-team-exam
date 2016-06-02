@@ -1,0 +1,27 @@
+{
+  "name": "x-team-exam",
+  "version": "1.0.0",
+  "description": "Test project ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spiresd55/x-team-exam.git"
+  },
+  "author": "David Spires",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spiresd55/x-team-exam/issues"
+  },
+  "homepage": "https://github.com/spiresd55/x-team-exam#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-cli": "^1.2.1",
+    "gulp-istanbul": "^0.10.4",
+    "gulp-jasmine": "^2.3.0",
+    "gulp-load-plugins": "^1.2.4"
+  }
+}
