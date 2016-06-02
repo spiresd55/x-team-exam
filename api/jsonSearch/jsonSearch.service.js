@@ -1,7 +1,8 @@
 const fs = require("fs"),
-    path = require("path");
+    path = require("path"),
+    config = require('../../config/index.js');
 
-const p = "./data";
+const p = config.jsonDirectory;
 
 function isValidSearch(searchString) {
     var pattern = /^[a-zA-Z0-9, ]*$/;
@@ -41,9 +42,8 @@ function loadJSONFilesIntoObjectArray(callback) {
                //If at the final object in the array, then send a callback with a valid response
                if(index === (files.length - 1 )) {
                    //Convert the data into a hashmap based on property searching for
-                   //TODO: configure tags
                    var mapOfStructure = [];
-                   convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, 'tags', false);
+                   convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
                    callback(mapOfStructure);
                }
 
@@ -132,8 +132,30 @@ function addToMap(value, map){
     }
 }
 
+function writeResults(results) {
+    var stream = fs.createWriteStream(config.resultsFile);
+    stream.once('open', function(fd) {
+        var buf = new Buffer(JSON.stringify(results));
+        stream.write(buf);
+        stream.end();
+    });
+}
+
+function loadResults(callback) {
+    fs.readFile(config.resultsFile, (err, data) => {
+        if(err) {
+           return callback(err, null);
+        }
+
+        var str = data.toString();
+
+        return callback(null, JSON.parse(str));
+    });
+}
 
 module.exports.isValidSearch = isValidSearch;
 module.exports.loadJSONFilesIntoObjectArray = loadJSONFilesIntoObjectArray;
 module.exports.searchMapAndSort = searchMapAndSort;
 module.exports.generateSearchTerms = generateSearchTerms;
+module.exports.writeResults = writeResults;
+module.exports.loadResults = loadResults;

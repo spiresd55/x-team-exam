@@ -17,6 +17,8 @@ function searchJSONFiles(lineReader, searchTerms) {
                     console.log('%s: %d', item.term, item.count);
                 });
 
+                jsonSearchService.writeResults(results);
+
                 console.log();
                 lineReader.prompt();
             });
