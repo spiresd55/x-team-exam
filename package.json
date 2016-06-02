@@ -22,6 +22,8 @@
     "gulp-cli": "^1.2.1",
     "gulp-istanbul": "^0.10.4",
     "gulp-jasmine": "^2.3.0",
-    "gulp-load-plugins": "^1.2.4"
+    "gulp-load-plugins": "^1.2.4",
+    "gulp-nodemon": "^2.0.7",
+    "proxyquire": "^1.7.9"
   }
 }

@@ -2,8 +2,10 @@ const gulp = require('gulp');
 const plugins = require('gulp-load-plugins');
 const jasmine = require('gulp-jasmine');
 const istanbul = require('gulp-istanbul');
+const nodemon = require('gulp-nodemon');
+
 //Run server side test
-gulp.task('test:server', ['pre-test'], function(){
+gulp.task('test', ['pre-test'], function(){
    return gulp.src([
        'api/**/*.spec.js',
        'components/**/*.spec.js'
@@ -39,3 +41,12 @@ gulp.task('pre-test', function(){
     }))
     .pipe(istanbul.hookRequire());
 });
+
+gulp.task('serve', function () {
+    nodemon({
+        script: 'server.js'
+        , ext: 'js html'
+    })
+});
+
+gulp.task('default', ['serve']);

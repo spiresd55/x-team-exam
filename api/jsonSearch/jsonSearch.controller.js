@@ -26,7 +26,6 @@ function searchJSONFiles(lineReader, searchTerms) {
         });
     }catch(error){
         console.error('Something went wrong \n ' + error);
-        process.exit(0);
     }
 }
 
