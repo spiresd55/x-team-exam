@@ -37,16 +37,16 @@ function beginReadingUserInput(showIntro, useCustomPrompt) {
 
         rl.on('line', (line) => {
             switch(line.trim()) {
-        case ':exit':
-            console.log('Exiting the program');
-            process.exit(0);
-            break;
-        default:
-            console.log('Searching for the following terms `' + line.trim() + '`');
-            jsonSearchController.searchJSONFiles(rl, line);
-            break;
-        }
-        rl.prompt();
+                case ':exit':
+                    console.log('Exiting the program');
+                    process.exit(0);
+                    break;
+                default:
+                    console.log('Searching for the following terms `' + line.trim() + '`');
+                    jsonSearchController.searchJSONFiles(rl, line);
+                    break;
+                }
+            rl.prompt();
         }).on('close', () => {
             console.log('Thank you, for searching today!');
             process.exit(0);
