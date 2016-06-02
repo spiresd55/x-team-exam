@@ -42,9 +42,11 @@ function loadJSONFilesIntoObjectArray(callback) {
                //If at the final object in the array, then send a callback with a valid response
                if(index === (files.length - 1 )) {
                    //Convert the data into a hashmap based on property searching for
-                   var mapOfStructure = [];
-                   convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
-                   callback(mapOfStructure);
+                   setTimeout(function() {
+                       var mapOfStructure = [];
+                       convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
+                       callback(mapOfStructure);
+                   }, 1000);
                }
 
             });
