@@ -18,10 +18,14 @@ Project Notes
   - Test files follow this pattern **.spec.js
   - When running gulp test istanbul will display a nice report
   - More detailed reports can be found in the coverage/ directory
+- Project configurations are stored in the /config directory. In a production world these setting can be overwritten based on the environment the code is running in
 - Results for previous searches are stored in a file called results.json
 - The gulp file enforces 100%. If this project was deployed to travis.cli. 100% code coverage would be necessary
 - As a javascript developer, I also have experience building angularjs web apps. I am more of a full stack developer.
 - The package.json file includes things besides the nodejs core modules, but the things included were used to add gulp tasks(Testing, and starting the server)
+- I personally prefer promises over callbacks. One part of the code I did not like was adding a timeout to prevent code from firing before all the code executed.
+  - In a Promise world, Promise.all could wait until all the promises are done executing before continuing on.
+- I usually name my callback/promise functions as well. making it easier to debug.
 
 Quick practical exam for node.js candidates.
 
