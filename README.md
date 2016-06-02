@@ -1,6 +1,28 @@
 Node.js exam
 ====
 
+Project Setup
+----
+
+- Clone local repo of project: git clone https://github.com/spiresd55/x-team-exam.git
+- Run the following commands: npm install, npm install gulp-cli --g
+- The server can be started in the following ways: gulp serve, gulp, or node server.js
+  - Note: Gulp serve allows nodemon to restart the server everytime there is a code change
+- To run tests run the following commands: gulp test
+
+Project Notes
+----
+
+- I only wrote one test case to 100%, just to show an example of a unit test
+  - If this was a official feature branch then I would write 100% code coverage for all code
+  - Test files follow this pattern **.spec.js
+  - When running gulp test istanbul will display a nice report
+  - More detailed reports can be found in the coverage/ directory
+- Results for previous searches are stored in a file called results.json
+- The gulp file enforces 100%. If this project was deployed to travis.cli. 100% code coverage would be necessary
+- As a javascript developer, I also have experience building angularjs web apps. I am more of a full stack developer.
+- The package.json file includes things besides the nodejs core modules, but the things included were used to add gulp tasks(Testing, and starting the server)
+
 Quick practical exam for node.js candidates.
 
 Requirements
