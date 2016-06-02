@@ -1,29 +1,31 @@
 const jsonSearchService = require('./jsonSearch.service.js');
 
 function searchJSONFiles(lineReader, searchTerms) {
-    //TODO: Check for bad formatted search terms
-    if(jsonSearchService.isValidSearch(searchTerms)){
-        //TODO: If there is return the ERROR callback to the readline prompt
+    if(!jsonSearchService.isValidSearch(searchTerms)){
+        throw new Error('INVALID SEARCH TERMS');
     }
 
-    jsonSearchService.loadJSONFilesIntoObjectArray(function(result) {
-        console.log('THE RESULT IS: ');
-        console.log(result);
+    try {
+        jsonSearchService.loadJSONFilesIntoObjectArray(function (results) {
 
-        searchTerms = searchTerms.split(',');
+            jsonSearchService.generateSearchTerms(searchTerms, function (terms) {
 
-        if(searchTerms.length === 0){
+                results = jsonSearchService.searchMapAndSort(terms, results);
+                console.log('########## FINAL RESULTS ##########');
 
-        }else {
+                results.forEach(function (item) {
+                    console.log('%s: %d', item.term, item.count);
+                });
 
-        }
-    });
-    //console.log('THE RESULT IS: ');
-    //console.log(result);
-    //Turn the search terms string into an array
-    //searchTerms = searchTerms.split(',');
+                console.log();
+                lineReader.prompt();
+            });
 
-
+        });
+    }catch(error){
+        console.error('Something went wrong \n ' + error);
+        process.exit(0);
+    }
 }
 
 module.exports.searchJSONFiles = searchJSONFiles;

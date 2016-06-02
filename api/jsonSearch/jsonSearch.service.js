@@ -3,25 +3,9 @@ const fs = require("fs"),
 
 const p = "./data";
 
-
-
 function isValidSearch(searchString) {
-    return true;
-}
-
-function searchJSONInFileSystem() {
-    loadJSONFilesIntoObjectArray(function(result) {
-        console.log('THE RESULT IS: ');
-        console.log(result);
-
-        searchTerms = searchTerms.split(',');
-
-        if(searchTerms.length === 0){
-
-        }else {
-
-        }
-    });
+    var pattern = /^[a-zA-Z0-9, ]*$/;
+    return pattern.test(searchString);
 }
 
 function loadJSONFilesIntoObjectArray(callback) {
@@ -37,7 +21,7 @@ function loadJSONFilesIntoObjectArray(callback) {
         }).filter(function (file) {
             return fs.statSync(file).isFile();
         }).forEach(function (file, index) {
-            console.log("%s (%s)", file, path.extname(file));
+            //console.log("%s (%s)", file, path.extname(file));
             fs.readFile(file, (err, data) => {
                 //TODO: CATCH THIS ERROR
                 if (err) throw err;
@@ -50,17 +34,56 @@ function loadJSONFilesIntoObjectArray(callback) {
                     objectArray.push(obj);
                 }catch(error) {
                     //This most likely means there was an issue parsing non valid JSON, this logs the error and continues
-                    console.error('ERROR OCCURED \n ' + error);
+                    console.error(' JSON PARSING ERROR OCCURED \n ' + error);
+                    console.log('');
                 }
 
                //If at the final object in the array, then send a callback with a valid response
                if(index === (files.length - 1 )) {
-                   callback(objectArray);
+                   //Convert the data into a hashmap based on property searching for
+                   //TODO: configure tags
+                   var mapOfStructure = [];
+                   convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, 'tags', false);
+                   callback(mapOfStructure);
                }
 
             });
         });
     });
+}
+
+function generateSearchTerms(searchTerms, callback) {
+    if(searchTerms.length === 0){
+        fs.readFile('tags.txt', (err, data) => {
+            if(err) {
+                throw err;
+            }
+
+            var str = data.toString();
+
+            return callback(str.split('\n'));
+        });
+    }else {
+        searchTerms = searchTerms.split(',');
+        return callback(searchTerms);
+    }
+
+}
+
+function searchMapAndSort(searchTerms, map) {
+    var sortedList = [];
+    searchTerms.forEach(function(term) {
+       if(map[term]){
+         var item = {};
+         item.term = term;
+         item.count = map[term];
+         sortedList.push(item);
+       }
+    });
+
+    return sortedList.sort((function(a, b) {
+        return b.count - a.count;
+    }));
 }
 
 // This method recursively search through either an array or object structure looking for specific data
@@ -100,7 +123,7 @@ function convertStructureToMapBasedOnSearchCriteria(structure, map, criteria, sh
     }
 }
 
-//This method will search a hashmap, if value not found add it with a value of one, if found increment the value
+//This method will search a map, if value not found add it with a value of one, if found increment the value
 function addToMap(value, map){
     if(map[value] === null || map[value] === undefined) {
         map[value] = 1;
@@ -112,3 +135,5 @@ function addToMap(value, map){
 
 module.exports.isValidSearch = isValidSearch;
 module.exports.loadJSONFilesIntoObjectArray = loadJSONFilesIntoObjectArray;
+module.exports.searchMapAndSort = searchMapAndSort;
+module.exports.generateSearchTerms = generateSearchTerms;
