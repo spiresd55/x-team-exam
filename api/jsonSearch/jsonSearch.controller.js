@@ -10,6 +10,8 @@ function searchJSONFiles(lineReader, searchTerms) {
 
             jsonSearchService.generateSearchTerms(searchTerms, function (terms) {
 
+                console.log('Searching for the following terms `' + terms + '`');
+
                 results = jsonSearchService.searchMapAndSort(terms, results);
                 console.log('########## FINAL RESULTS ##########');
 

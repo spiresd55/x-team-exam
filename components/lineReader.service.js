@@ -42,7 +42,6 @@ function beginReadingUserInput(showIntro, useCustomPrompt) {
                     process.exit(0);
                     break;
                 default:
-                    console.log('Searching for the following terms `' + line.trim() + '`');
                     jsonSearchController.searchJSONFiles(rl, line);
                     break;
                 }
