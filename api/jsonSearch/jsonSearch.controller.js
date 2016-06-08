@@ -15,11 +15,15 @@ function searchJSONFiles(lineReader, searchTerms) {
                 results = jsonSearchService.searchMapAndSort(terms, results);
                 console.log('########## FINAL RESULTS ##########');
 
-                results.forEach(function (item) {
-                    console.log('%s: %d', item.term, item.count);
-                });
+                if(results.length === 0){
+                    console.log("No tags found matching your search terms")
+                }else {
+                    results.forEach(function (item) {
+                        console.log('%s: %d', item.term, item.count);
+                    });
 
-                jsonSearchService.writeResults(results);
+                    jsonSearchService.writeResults(results);
+                }
 
                 console.log();
                 lineReader.prompt();
