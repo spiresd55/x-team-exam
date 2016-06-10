@@ -12,7 +12,7 @@ function searchJSONFiles(lineReader, searchTerms, callback) {
 
     function searchTermsCallback(err, terms) {
         if(err){
-            callback(err, null);
+            return callback(err, null);
         }
         console.log('Searching for the following terms `' + terms + '`');
         searchTerms = terms;
@@ -21,12 +21,12 @@ function searchJSONFiles(lineReader, searchTerms, callback) {
 
     function jsonFilesCallback(err, results) {
         if(err){
-          callback(err, null);
+          return callback(err, null);
         }
 
         results = jsonSearchService.searchMapAndSort(searchTerms, results);
 
-        callback(null, results);
+        return callback(null, results);
         /*console.log('########## FINAL RESULTS ##########');
 
         if(results.length === 0){

@@ -56,6 +56,8 @@ function beginReadingUserInput(showIntro, useCustomPrompt) {
     function handleResultsCallback(err, results){
       if(err){
         console.log("BOOP");
+        //TODO: Add better error handling here
+        //console.log(err);
       }
 
       if(results) {
