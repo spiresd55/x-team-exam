@@ -9,11 +9,15 @@ function isValidSearch(searchString) {
     return pattern.test(searchString);
 }
 
+//TODO: Create a JSON Exception Error
+
 function loadJSONFilesIntoObjectArray(callback) {
     var objectArray = [];
     fs.readdir(p, readDiretory);
+    var files, index;
 
-    function readDiretory(err, files) {
+    function readDiretory(err, _files) {
+        files = _files;
         //If there is an error reading the directory then throw an error
         if (err) {
             throw err;
@@ -22,62 +26,65 @@ function loadJSONFilesIntoObjectArray(callback) {
         files.map(mapFiles)
           .filter(filterFiles)
           .forEach(iterateFiles);
+    }
 
-        function mapFiles(file) {
-            return path.join(p, file);
+    function mapFiles(file) {
+        return path.join(p, file);
+    }
+
+    function filterFiles(file) {
+        return fs.statSync(file).isFile();
+    }
+
+    function iterateFiles(file, _index) {
+        index = _index;
+        fs.readFile(file, readFile);
+    }
+
+    function readFile(err, data) {
+        //TODO: Add callback here
+        if (err) throw err;
+
+        //A raw buffer is returned, this will convert it to JSON
+        var str = data.toString();
+        try {
+            //If the string converts to JSON correctly then add it to the objects array
+            var obj = JSON.parse(str);
+            objectArray.push(obj);
+        }catch(error) {
+            //This most likely means there was an issue parsing non valid JSON, this logs the error and continues
+            console.error(' JSON PARSING ERROR OCCURED \n ' + error);
+            console.log('');
         }
 
-        function filterFiles(file) {
-            return fs.statSync(file).isFile();
-        }
-
-        function iterateFiles(file, index) {
-            fs.readFile(file, readFile);
-
-            function readFile(err, data) {
-                //TODO: Add callback here
-                if (err) throw err;
-
-                //A raw buffer is returned, this will convert it to JSON
-                var str = data.toString();
-                try {
-                    //If the string converts to JSON correctly then add it to the objects array
-                    var obj = JSON.parse(str);
-                    objectArray.push(obj);
-                }catch(error) {
-                    //This most likely means there was an issue parsing non valid JSON, this logs the error and continues
-                    console.error(' JSON PARSING ERROR OCCURED \n ' + error);
-                    console.log('');
-                }
-
-                //If at the final object in the array, then send a callback with a valid response
-                if(index === (files.length - 1 )) {
-                    //Convert the data into a hashmap based on property searching for
-                    setTimeout(function() {
-                        var mapOfStructure = [];
-                        convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
-                        callback(mapOfStructure);
-                    }, 1000);
-                }
-            }
+        //If at the final object in the array, then send a callback with a valid response
+        if(index === (files.length - 1 )) {
+            //Convert the data into a hashmap based on property searching for
+            setTimeout(function() {
+                var mapOfStructure = [];
+                convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
+                callback(mapOfStructure);
+            }, 1000);
         }
     }
 }
 
 function generateSearchTerms(searchTerms, callback) {
     if(searchTerms.length === 0){
-        fs.readFile('tags.txt', (err, data) => {
-            if(err) {
-                throw err;
-            }
-
-            var str = data.toString();
-
-            return callback(str.split('\n'));
-        });
+        fs.readFile('tags.txt', readFile);
     }else {
         searchTerms = searchTerms.split(',');
         return callback(searchTerms);
+    }
+
+    function readFile(err, data) {
+        if(err) {
+            throw err;
+        }
+
+        var str = data.toString();
+
+        return callback(str.split('\n'));
     }
 
 }
@@ -146,23 +153,27 @@ function addToMap(value, map){
 
 function writeResults(results) {
     var stream = fs.createWriteStream(config.resultsFile);
-    stream.once('open', function(fd) {
+    stream.once('open', openStream);
+
+    function openStream(fd){
         var buf = new Buffer(JSON.stringify(results));
         stream.write(buf);
         stream.end();
-    });
+    }
 }
 
 function loadResults(callback) {
-    fs.readFile(config.resultsFile, (err, data) => {
+    fs.readFile(config.resultsFile, readFile);
+
+    function readFile(err, data) {
         if(err) {
-           return callback(err, null);
+            return callback(err, null);
         }
 
         var str = data.toString();
 
         return callback(null, JSON.parse(str));
-    });
+    }
 }
 
 module.exports.isValidSearch = isValidSearch;
