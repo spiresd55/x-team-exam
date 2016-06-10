@@ -53,7 +53,7 @@ function loadJSONFilesIntoObjectArray(callback) {
             objectArray.push(obj);
         }catch(error) {
             //This most likely means there was an issue parsing non valid JSON, this logs the error and continues
-            console.error(' JSON PARSING ERROR OCCURED \n ' + error);
+            console.error(' JSON PARSING ERROR OCCURRED \n ' + error);
             console.log('');
         }
 
@@ -91,18 +91,22 @@ function generateSearchTerms(searchTerms, callback) {
 
 function searchMapAndSort(searchTerms, map) {
     var sortedList = [];
-    searchTerms.forEach(function(term) {
-       if(map[term]){
-         var item = {};
-         item.term = term;
-         item.count = map[term];
-         sortedList.push(item);
-       }
-    });
+    searchTerms.forEach(iterateSearchTerms);
 
-    return sortedList.sort((function(a, b) {
+    function iterateSearchTerms(term) {
+        if(map[term]){
+            var item = {};
+            item.term = term;
+            item.count = map[term];
+            sortedList.push(item);
+        }
+    }
+
+    function sortList(a, b) {
         return b.count - a.count;
-    }));
+    }
+
+    return sortedList.sort(sortList);
 }
 
 // This method recursively search through either an array or object structure looking for specific data
