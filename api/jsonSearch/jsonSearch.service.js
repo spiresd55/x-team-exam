@@ -11,23 +11,34 @@ function isValidSearch(searchString) {
 
 function loadJSONFilesIntoObjectArray(callback) {
     var objectArray = [];
-    fs.readdir(p, function (err, files) {
+    fs.readdir(p, readDiretory);
+
+    function readDiretory(err, files) {
         //If there is an error reading the directory then throw an error
         if (err) {
             throw err;
         }
 
-        files.map(function (file) {
+        files.map(mapFiles)
+          .filter(filterFiles)
+          .forEach(iterateFiles);
+
+        function mapFiles(file) {
             return path.join(p, file);
-        }).filter(function (file) {
+        }
+
+        function filterFiles(file) {
             return fs.statSync(file).isFile();
-        }).forEach(function (file, index) {
-            //console.log("%s (%s)", file, path.extname(file));
-            fs.readFile(file, (err, data) => {
-                //TODO: CATCH THIS ERROR
+        }
+
+        function iterateFiles(file, index) {
+            fs.readFile(file, readFile);
+
+            function readFile(err, data) {
+                //TODO: Add callback here
                 if (err) throw err;
 
-               //A raw buffer is returned, this will convert it to JSON
+                //A raw buffer is returned, this will convert it to JSON
                 var str = data.toString();
                 try {
                     //If the string converts to JSON correctly then add it to the objects array
@@ -39,19 +50,18 @@ function loadJSONFilesIntoObjectArray(callback) {
                     console.log('');
                 }
 
-               //If at the final object in the array, then send a callback with a valid response
-               if(index === (files.length - 1 )) {
-                   //Convert the data into a hashmap based on property searching for
-                   setTimeout(function() {
-                       var mapOfStructure = [];
-                       convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
-                       callback(mapOfStructure);
-                   }, 1000);
-               }
-
-            });
-        });
-    });
+                //If at the final object in the array, then send a callback with a valid response
+                if(index === (files.length - 1 )) {
+                    //Convert the data into a hashmap based on property searching for
+                    setTimeout(function() {
+                        var mapOfStructure = [];
+                        convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
+                        callback(mapOfStructure);
+                    }, 1000);
+                }
+            }
+        }
+    }
 }
 
 function generateSearchTerms(searchTerms, callback) {
