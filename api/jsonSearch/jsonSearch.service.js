@@ -20,7 +20,7 @@ function loadJSONFilesIntoObjectArray(callback) {
         files = _files;
         //If there is an error reading the directory then throw an error
         if (err) {
-            throw err;
+            callback(err, null);
         }
 
         files.map(mapFiles)
@@ -43,7 +43,9 @@ function loadJSONFilesIntoObjectArray(callback) {
 
     function readFile(err, data) {
         //TODO: Add callback here
-        if (err) throw err;
+        if (err) {
+            callback(err, null);
+        }
 
         //A raw buffer is returned, this will convert it to JSON
         var str = data.toString();
@@ -63,7 +65,7 @@ function loadJSONFilesIntoObjectArray(callback) {
             setTimeout(function() {
                 var mapOfStructure = [];
                 convertStructureToMapBasedOnSearchCriteria(objectArray, mapOfStructure, config.searchCriteria, false);
-                callback(mapOfStructure);
+                callback(null, mapOfStructure);
             }, 1000);
         }
     }
@@ -74,17 +76,17 @@ function generateSearchTerms(searchTerms, callback) {
         fs.readFile('tags.txt', readFile);
     }else {
         searchTerms = searchTerms.split(',');
-        return callback(searchTerms);
+        return callback(null, searchTerms);
     }
 
     function readFile(err, data) {
         if(err) {
-            throw err;
+            callback(err, null);
         }
 
         var str = data.toString();
 
-        return callback(str.split('\n'));
+        return callback(null, str.split('\n'));
     }
 
 }
@@ -179,6 +181,14 @@ function loadResults(callback) {
         return callback(null, JSON.parse(str));
     }
 }
+
+//Custom Error for JSON Parsing
+function ApplicationParsingError(message) {
+    this.name = "ApplicationParsingError";
+    this.message = (message || "");
+}
+
+ApplicationParsingError.prototype = Error.prototype;
 
 module.exports.isValidSearch = isValidSearch;
 module.exports.loadJSONFilesIntoObjectArray = loadJSONFilesIntoObjectArray;

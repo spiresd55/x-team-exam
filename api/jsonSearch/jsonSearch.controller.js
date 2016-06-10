@@ -1,22 +1,33 @@
 const jsonSearchService = require('./jsonSearch.service.js');
 
-function searchJSONFiles(lineReader, searchTerms) {
+function searchJSONFiles(lineReader, searchTerms, callback) {
+    //TODO: Propagate this error correctly
+    console.log("HERE I AM");
+    console.log(searchTerms);
     if(!jsonSearchService.isValidSearch(searchTerms)){
         throw new Error('INVALID SEARCH TERMS');
     }
 
     jsonSearchService.generateSearchTerms(searchTerms, searchTermsCallback);
 
-
-    function searchTermsCallback(terms) {
+    function searchTermsCallback(err, terms) {
+        if(err){
+            callback(err, null);
+        }
         console.log('Searching for the following terms `' + terms + '`');
         searchTerms = terms;
         jsonSearchService.loadJSONFilesIntoObjectArray(jsonFilesCallback);
     }
 
-    function jsonFilesCallback(results) {
+    function jsonFilesCallback(err, results) {
+        if(err){
+          callback(err, null);
+        }
+
         results = jsonSearchService.searchMapAndSort(searchTerms, results);
-        console.log('########## FINAL RESULTS ##########');
+
+        callback(null, results);
+        /*console.log('########## FINAL RESULTS ##########');
 
         if(results.length === 0){
             console.log("No tags found matching your search terms")
@@ -26,10 +37,11 @@ function searchJSONFiles(lineReader, searchTerms) {
             });
 
             jsonSearchService.writeResults(results);
-        }
 
-        console.log();
-        lineReader.prompt();
+        }*/
+
+        //console.log();
+        //lineReader.prompt();
     }
 
 }

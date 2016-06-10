@@ -42,7 +42,7 @@ function beginReadingUserInput(showIntro, useCustomPrompt) {
                     process.exit(0);
                     break;
                 default:
-                    jsonSearchController.searchJSONFiles(rl, line);
+                    jsonSearchController.searchJSONFiles(rl, line, handleResultsCallback);
                     break;
                 }
             rl.prompt();
@@ -51,6 +51,32 @@ function beginReadingUserInput(showIntro, useCustomPrompt) {
             process.exit(0);
          });
     });
+
+    //TODO: Handle this
+    function handleResultsCallback(err, results){
+      if(err){
+        console.log("BOOP");
+      }
+
+      if(results) {
+        console.log('########## FINAL RESULTS ##########');
+
+        if (results.length === 0) {
+          console.log("No tags found matching your search terms")
+        } else {
+          results.forEach(function (item) {
+            console.log('%s: %d', item.term, item.count);
+          });
+
+          jsonSearchService.writeResults(results);
+
+        }
+      }
+
+        console.log();
+        rl.prompt();
+
+    }
 
 }
 
