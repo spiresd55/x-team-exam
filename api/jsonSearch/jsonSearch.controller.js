@@ -2,8 +2,7 @@ const jsonSearchService = require('./jsonSearch.service.js');
 
 function searchJSONFiles(lineReader, searchTerms, callback) {
     //TODO: Propagate this error correctly
-    console.log("HERE I AM");
-    console.log(searchTerms);
+
     if(!jsonSearchService.isValidSearch(searchTerms)){
         throw new Error('INVALID SEARCH TERMS');
     }
